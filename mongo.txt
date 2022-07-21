@@ -1,0 +1,66 @@
+Queries: 
+
+* alle filme aus dem jahr 2000 
+	db.movies.find({year: "2000"})
+	db.movies.find({year: "2000"}).count()  ==>   7
+
+* alle filme aus den jahren 1994 oder 2001 
+	db.movies.find({$or:[{year: "1994"},{year: "2001"}]})
+	db.movies.find({$or:[{year:"1994"}, {year: "2001"}]}).count()  ==> 12
+
+* alle filme aus den jahren 1994 oder 2001 sortiert nach titel absteigend 
+	db.movies.find({$or:[{year: "1994"}, {year: "2001"}]}).sort({titel: -1})
+
+* alle filme aus den jahren 1994 oder 2001 sortiert nach bewertung aufsteigen 
+	db.movies.find({$or:[{year: "1994"}, {year: "2001"}]}).collation({locale:"en_US", numericOrdering:true}).sort({rate: 1})
+	 rate: `8.1` bis  rate: '9.3'
+
+* wieviele filme haben eine bewertung von genau 9.0 
+	db.movies.find({rate:"9.0"}).count() ==> 2   
+
+* alle filme-titel + bewertung vom George Lucas 
+	db.movies.find({director:"George Lucas"},{title:1, rate:1, _id:0})
+	[ { title: 'Star Wars', rate: '8.7' } ]
+* alle filme-titel + bewertung + genre vom Martin Scorsese, aufsteigend nach bewertung sortiert
+	 db.movies.find({director: "Martin Scorsese"}, {title:1, rate:1, genre:1, _id:0}).sort({rate:1})
+[
+  {
+    title: 'Shutter Island',
+    genre: [ 'Mystery', 'Thriller' ],
+    rate: '8.1'
+  },
+  {
+    title: 'Raging Bull',
+    genre: [ 'Biography', 'Drama', 'Sport' ],
+    rate: '8.2'
+  },
+  { title: 'Casino', genre: [ 'Crime', 'Drama' ], rate: '8.2' },
+  {
+    title: 'The Wolf of Wall Street',
+    genre: [ 'Biography', 'Comedy', 'Crime', 'Drama' ],
+    rate: '8.2'
+  },
+  { title: 'Taxi Driver', genre: [ 'Crime', 'Drama' ], rate: '8.3' },
+  {
+    title: 'The Departed',
+    genre: [ 'Crime', 'Drama', 'Thriller' ],
+    rate: '8.5'
+  },
+  { title: 'Goodfellas', genre: [ 'Crime', 'Drama' ], rate: '8.7' }
+]
+
+
+
+Bonus Query mit Sternchen:
+
+* wieviele filme gabs in den 90ern? 
+	db.movies.find({$and:[{year:{$gte: "1990"}},{year:{$lt:"2000"}}]}).count()
+      42
+
+* alle comedy movies 
+	db.movies.find({genre: "Comedy"})
+	db.movies.find({genre: "Comedy"}).count()
+	45
+
+
+
